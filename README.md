@@ -19,3 +19,7 @@ Backend part of [Yandex.practikum](https://praktikum.yandex.ru/) final coursewor
 8. POST '/signin' - login
 
 ## Availability
+1. http://84.201.175.206/api
+2. https://84.201.175.206/api
+3. http://news-explorer-yandex.tk/api
+4. https://news-explorer-yandex.tk/api
