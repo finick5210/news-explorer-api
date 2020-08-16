@@ -1,6 +1,6 @@
 const Article = require('../models/article');
 const {
-  NotFoundError, AuthorizationError, ServerError, ValidationError,
+  NotFoundError, AuthorizationError, ServerError, ValidationError, ForbiddenError
 } = require('../errors');
 const { messages } = require('../constants/messages');
 
@@ -31,7 +31,7 @@ module.exports.deleteArticle = (req, res, next) => {
       if (!article) {
         throw new NotFoundError(messages.not_found_article);
       } if (article.owner.toString() !== req.user._id) {
-        throw new AuthorizationError(messages.auth_delete_article, 403);
+        throw new ForbiddenError(messages.auth_delete_article);
       }
 
       Article.deleteOne({ _id: article._id })
