@@ -5,10 +5,9 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
-const { users, articles } = require('./routes');
-const { createUser, login } = require('./controllers/users');
+const { users, articles, authorization } = require('./routes');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const limiter = require('./middlewares/rate-limiter');
 
@@ -32,20 +31,7 @@ mongoose.connect(NODE_ENV === 'production' ? MONGO_ADDRESS : 'mongodb://localhos
 
 app.use(requestLogger);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(4),
-  }),
-}), login);
-
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(4),
-  }),
-}), createUser);
+app.use('/', authorization);
 
 app.use(auth);
 
@@ -62,4 +48,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {});
+app.listen(PORT);
