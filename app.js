@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -13,7 +14,26 @@ const limiter = require('./middlewares/rate-limiter');
 
 const { PORT = 3000 } = process.env;
 
+const whitelist = [
+  'http://news-explorer-yandex.tk',
+  'http://www.news-explorer-yandex.tk',
+  'https://news-explorer-yandex.tk',
+  'https://www.news-explorer-yandex.tk',
+];
+const corsOptions = {
+  origin(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
 const app = express();
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
