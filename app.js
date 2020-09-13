@@ -5,7 +5,6 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
 const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { users, articles, authorization } = require('./routes');
@@ -15,10 +14,6 @@ const limiter = require('./middlewares/rate-limiter');
 const { PORT = 3000 } = process.env;
 
 const app = express();
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -53,4 +48,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {});
+app.listen(PORT);
