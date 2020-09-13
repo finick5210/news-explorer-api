@@ -14,12 +14,21 @@ const limiter = require('./middlewares/rate-limiter');
 
 const { PORT = 3000 } = process.env;
 
+const whitelist = [
+  'http://news-explorer-yandex.tk',
+  'http://www.news-explorer-yandex.tk',
+  'https://news-explorer-yandex.tk',
+  'https://www.news-explorer-yandex.tk',
+];
 const corsOptions = {
-  origin: [
-    'http://localhost:8080',
-    'http://news-explorer-yandex.tk',
-    'https://news-explorer-yandex.tk',
-  ],
+  origin(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
